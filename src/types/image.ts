@@ -26,3 +26,7 @@ export interface GoldenImage {
     changes: string[];
   }[];
 }
+
+export interface ExpandableImageState {
+  [key: string]: boolean;
+}

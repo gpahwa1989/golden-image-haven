@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { SearchFilter } from "@/components/SearchFilter";
-import { ImageCard } from "@/components/ImageCard";
 import { ImageTable } from "@/components/ImageTable";
+import { ExpandableImageCard } from "@/components/ExpandableImageCard";
 import { goldenImages } from "@/data/images";
-import { GoldenImage } from "@/types/image";
+import { GoldenImage, ExpandableImageState } from "@/types/image";
 import { ArrowUpRight, Package } from "lucide-react";
 
 const Index = () => {
@@ -15,6 +15,7 @@ const Index = () => {
     verified?: boolean;
   }>({});
   const [view, setView] = useState<"grid" | "table">("grid");
+  const [expandedState, setExpandedState] = useState<ExpandableImageState>({});
 
   // Filter images based on search query and filters
   const filteredImages = goldenImages.filter((image) => {
@@ -52,6 +53,13 @@ const Index = () => {
     verified?: boolean;
   }) => {
     setFilters({ ...filters, ...newFilters });
+  };
+
+  const toggleExpand = (id: string) => {
+    setExpandedState((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
   };
 
   return (
@@ -101,7 +109,12 @@ const Index = () => {
               ) : view === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredImages.map((image) => (
-                    <ImageCard key={image.id} image={image} />
+                    <ExpandableImageCard 
+                      key={image.id} 
+                      image={image} 
+                      expanded={!!expandedState[image.id]}
+                      onToggleExpand={() => toggleExpand(image.id)}
+                    />
                   ))}
                 </div>
               ) : (
